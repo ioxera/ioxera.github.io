@@ -170,7 +170,7 @@
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png" alt="grub.cfg"></p>
 <p>grub.cfg中指定了内核启动的参数，<code>root=/dev/ram0</code> 说明ikuai系统使用了ramfs来作为系统的root目录文件系统，并把 <code>/boot/rootfs</code> 作为initrd直接加载到ramfs中。在第二个启动项中指定了串口ttyS0来打印终端信息，波特率为115200。这里为了可以在启动时临时编辑启动项，修改timeout设置为-1,让grub暂停在启动项选择页面上。</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-30-05.png" alt="vmlinuz and rootfs info"></p>
-<p>查看<a href="vmlinuz">vmlinuz</a>和rootfs的文件类型可以看到内核版本为3.18.67，压缩类型是bzImage，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了，看来这位daxiong同学是想难为下我胖虎了。</p>
+<p>查看vmlinuz和rootfs的文件类型可以看到内核版本为3.18.67，压缩类型是bzImage，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了，看来这位daxiong同学是想难为下我胖虎了。</p>
 <p>打开虚拟机的串口配置，为虚拟机添加一个串口，在grub上选择第二个带有串口参数的启动项，按e键编辑启动项，在linux命令上增加 <code>init=/bin/sh</code> 参数：</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-50-28.png" alt="grub cmd"></p>
 <p>在host机器上执行 <code>socat -d -d /tmp/serial PTY</code> 创建一个和虚拟机串口通信的串口设备文件 <code>/dev/pts/1</code>，<code>/tmp/serial</code> 为虚拟机串口配置中指定的本地socket文件。在另一个终端中执行 <code>minicom -b 115200 -D /dev/pts/1</code> 连接虚拟机的串口，虚拟机启动过程中的内核信息就通过串口打印到minicom中了。在minicom中查看虚拟机的内核启动信息及根文件系统结构：</p>
@@ -183,7 +183,7 @@
 <h2 id="固件解密"><a href="#固件解密" class="headerlink" title="固件解密"></a>固件解密</h2><p>linux系统启动过程中有两处加载initrd的地方，第一处是grub中normal模式下通过initrd命令加载，第二处在linux内核中对initrd进行解压并加载到initrd_start全局变量指定的地址处。这里猜测厂家是在内核中做了手脚，而非在grub中，下面验证我的想法：</p>
 <p>在ubuntu系统中随意编辑rootfs文件并保存，在ikuai系统的grub启动项选择界面按c键进入命令模式，按照grub.cfg中的内核参数手动键入加载指令，分别加载kernel和initrd，并未报告出错信息，文件正常加载了，返回启动项选择界面选择第二个启动项进入系统，在minicom中看到内核未正常启动并报告 <code>&quot;Kernel panic - not syncing: Invaild rootfs&quot;</code> ，猜测daxiong同学在内核中加了对rootfs文件的解密和校验流程。</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_15-45-59.png" alt="grub load initrd"><br><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_16-55-00.png" alt="grub load initrd"></p>
-<p>搜索对应内核版本的源码发现没有 <code>&quot;Invaild rootfs&quot;</code> 字符串，猜测此字符串应该是daxiong同学添加的报错信息。使用内核源码的extract-vmlinux工具对vmlinuz文件进行解包得到vmlinux可执行文件，此文件是静态链接的elf格式文件，放入IDA查看 <code>&quot;Invaild rootfs&quot;</code> 字符串的交叉引用定位到添加的解密部分在内核的populate_rootfs函数中：</p>
+<p>搜索对应内核版本的源码发现没有 <code>&quot;Invaild rootfs&quot;</code> 字符串，猜测此字符串应该是daxiong同学添加的报错信息。使用内核源码的extract-vmlinux工具对<a href="vmlinuz">vmlinuz</a>文件进行解包得到vmlinux可执行文件，此文件是静态链接的elf格式文件，放入IDA查看 <code>&quot;Invaild rootfs&quot;</code> 字符串的交叉引用定位到添加的解密部分在内核的populate_rootfs函数中：</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_17-34-18.png" alt="populate_rootfs function disassembly"></p>
 <p>逆向分析之后的解密流程如上图所示，使用c语言还原<a href="decode_rootfs.c">解密算法</a>，对rootfs文件进行解密之后得到xz压缩格式的压缩文件，使用<code>xz -dk rootfs.xz</code>命令进行解包得到一个ext2文件系统镜像，使用ext2rd工具对镜像进行解包，得到和上面通过修改init进程看到的根文件系统结构相同的目录树:</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_18-18-34.png" alt="rootfs info"><br>至此固件解密完成。</p>
