@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛广的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供">
+    <meta name="description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ikuai软路由系统-固件解密">
 <meta property="og:url" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/">
 <meta property="og:site_name" content="Ioxera&#39;s Blog">
-<meta property="og:description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛广的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供">
+<meta property="og:description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png">
 <meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png">
@@ -162,7 +162,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h2 id="ikuai简介"><a href="#ikuai简介" class="headerlink" title="ikuai简介"></a>ikuai简介</h2><p>ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛广的应用。</p>
+    <h2 id="ikuai简介"><a href="#ikuai简介" class="headerlink" title="ikuai简介"></a>ikuai简介</h2><p>ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。</p>
 <p>因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。</p>
 <h2 id="固件分析"><a href="#固件分析" class="headerlink" title="固件分析"></a>固件分析</h2><p>在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来ikuai软路由系统ISO、IMG、GHOST、BIN四种镜像，且主要支持x86架构。这里直接从官网下载ISO镜像，并在virtualbox虚拟机中进行安装。安装成功后将ikuai路由器系统的磁盘挂载到其他的linux系统上（这里使用ubuntu系统），可以看到ikuai系统的分区和分区内的文件</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png" alt="ikuai系统分区"></p>
@@ -170,7 +170,7 @@
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png" alt="grub.cfg"></p>
 <p>grub.cfg中指定了内核启动的参数，<code>root=/dev/ram0</code> 说明ikuai系统使用了ramfs来作为系统的root目录文件系统，并把 <code>/boot/rootfs</code> 作为initrd直接加载到ramfs中。在第二个启动项中指定了串口ttyS0来打印终端信息，波特率为115200。这里为了可以在启动时临时编辑启动项，修改timeout设置为-1,让grub暂停在启动项选择页面上。</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-30-05.png" alt="vmlinuz and rootfs info"></p>
-<p>查看vmlinuz和rootfs的文件类型可以看到内核版本为3.18.67，压缩类型是bzImage，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了，看来这位daxiong同学是想难为下我胖虎了。</p>
+<p>查看vmlinuz和rootfs的文件类型可以看到内核版本为3.18.67，打包为bzImage格式，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了。</p>
 <p>打开虚拟机的串口配置，为虚拟机添加一个串口，在grub上选择第二个带有串口参数的启动项，按e键编辑启动项，在linux命令上增加 <code>init=/bin/sh</code> 参数：</p>
 <p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-50-28.png" alt="grub cmd"></p>
 <p>在host机器上执行 <code>socat -d -d /tmp/serial PTY</code> 创建一个和虚拟机串口通信的串口设备文件 <code>/dev/pts/1</code>，<code>/tmp/serial</code> 为虚拟机串口配置中指定的本地socket文件。在另一个终端中执行 <code>minicom -b 115200 -D /dev/pts/1</code> 连接虚拟机的串口，虚拟机启动过程中的内核信息就通过串口打印到minicom中了。在minicom中查看虚拟机的内核启动信息及根文件系统结构：</p>
@@ -250,7 +250,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     ioxera
   </div>
   <div class="footer-right">

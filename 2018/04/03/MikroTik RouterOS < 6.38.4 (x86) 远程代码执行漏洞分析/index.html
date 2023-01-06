@@ -172,7 +172,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>《Vault 7》是由维基解密从2017年3月7日开始，发布的一系列文件。其中详细描述了美国中央情报局(Central Intelligence Agency)执行电子监视和网络战的细节活动和能力。Chimay Red是Vault 7中泄漏的CIA Hacking Tools中包含的一个用于exploit运行Router OS的MikroTik(MT) 路由器的一个工具，此工具可用来向MT路由器上传HIVE（Vault7中泄漏出的一个CIA远程控制工具）或者shellcode等payload。Vault7泄露的文档中只包含了<a href="https://wikileaks.org/ciav7p1/cms/page_16384604.html">工具的使用手册</a>，但此工具并未公开。BigNerd95在github上的<a href="https://github.com/BigNerd95/Chimay-Red">Chiamy Red项目</a>根据RouterOS的补丁对Chimay Red中使用的漏洞进行了揭露并给出了poc。</p>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>《Vault 7》是由维基解密从2017年3月7日开始，发布的一系列文件。其中详细描述了美国中央情报局(Central Intelligence Agency)执行电子监视和网络战的细节活动和能力。Chimay Red是Vault 7中泄漏的CIA Hacking Tools中包含的一个用于exploit运行Router OS的MikroTik(MT) 路由器的一个工具，此工具可用来向MT路由器上传HIVE（Vault7中泄漏出的一个CIA远程控制工具）或者shellcode等payload。Vault7泄露的文档中只包含了<a href="https://wikileaks.org/ciav7p1/cms/page_16384604.html">工具的使用手册</a>，但此工具并未公开。BigNerd95在github上的<a href="https://github.com/BigNerd95/Chimay-Red">Chiamy Red项目</a>根据RouterOS的补丁对Chimay Red中使用的漏洞进行了揭露并给出了EXP。</p>
 <p>本文主要是对BigNerd95的Chiamy Red项目中使用的 Stack Clash Remote Code Execution漏洞及给出的exp进行细节分析。 环境搭建及使用的漏洞具体可参考<a href="https://github.com/BigNerd95/Chimay-Red/blob/36faf04e9ffb224811e0ac074a62126fdca7a92f/docs/ChimayRed.pdf">这里</a>。此漏洞存在于RouterOS 6.38.4版本以下，在<a href="https://mikrotik.com/download/changelogs/current-release-tree">6.38.5版本</a>中被修补。</p>
 <h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>从BigNerd95给出的文档中，我们可以知道此漏洞存在于www二进制文件中的Request::readPostData函数中。我们可以使用Chiamy Red项目中的getROSbin.py工具从RouterOS镜像中提取www二进制文件，命令如下：<br><code>$ ./tools/getROSbin.py 6.38.4 x86 /nova/bin/www www_binary</code><br>使用IDA查看Request::readPostData函数 :<br><img src="/2018/04/03/MikroTik%20RouterOS%20%3C%206.38.4%20(x86)%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1.png" alt="1"><br>可以看到，该函数先使用Headers::getHeader函数获取content_length字段的值，然后并未对值进行判断就传入了alloca函数，随后使用istream:read函数将content_len_velue长度的数据读取到了当前函数的栈帧中。</p>
 <p>alloca函数具体进行的操作如下图:<br><img src="/2018/04/03/MikroTik%20RouterOS%20%3C%206.38.4%20(x86)%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/2.png" alt="2"><br>alloca函数将content_len_velue进行对齐之后，在当前栈帧上分配了对应大小的空间，这将允许我们直接控制当前栈帧的栈顶位置。</p>
@@ -240,7 +240,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     ioxera
   </div>
   <div class="footer-right">

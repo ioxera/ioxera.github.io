@@ -161,7 +161,7 @@
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># yum groupinstall &quot;Development Tools&quot;</span><br><span class="line"># yum install ncurses-devel</span><br><span class="line"># yum install hmaccalc zlib-devel binutils-devel elfutils-libelf-devel</span><br><span class="line"># yum install glibc_static</span><br></pre></td></tr></table></figure>
 <p>配置及编译busybox</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ make defconfig</span><br><span class="line">$ make menuconfig</span><br><span class="line">  /* select Busybox Settings</span><br><span class="line">     then General Configuration</span><br><span class="line">       then exec prefers applets</span><br><span class="line">     then Build Options</span><br><span class="line">       then Build Busybox as a static binary</span><br><span class="line">     exit back to top level menu</span><br><span class="line">     select Linux System Utilities</span><br><span class="line">       then mdev</span><br><span class="line">     select Shells</span><br><span class="line">       then Standalone shell</span><br><span class="line">     exit back to top level menu</span><br><span class="line">   exit and save new configuration</span><br><span class="line">  */</span><br><span class="line">$ make</span><br><span class="line">$ make install</span><br></pre></td></tr></table></figure>
-<p><code>make defconfig</code>配置选项提供了最大通用兼容性。<br><code>standalone shell mode</code>使busybox的内置命令shell，直接运行busybox的内部小程序，而不查找该名称的外部程序。<br><code>Build Busybox as a static binary</code>由于只需要busybox提供的功能，因此在此处使用静态链接库，省去设置glibc环境的麻烦<br><code>make install</code>会将编译好的程序安装到源码根目录的<code>_install</code>文件夹内  </p>
+<p><code>make defconfig</code>配置选项提供了最大通用兼容性。<br><code>standalone shell mode</code>使busybox的内置命令shell，直接运行busybox的内部小程序，而不查找该名称的外部程序。<br><code>Build Busybox as a static binary</code>由于只需要busybox提供的功能，因此在此处使用静态链接库，省去设置glibc环境的麻烦。<br><code>make install</code>会将编译好的程序安装到源码根目录的<code>_install</code>文件夹内。  </p>
 <h2 id="配置ROOTFS"><a href="#配置ROOTFS" class="headerlink" title="配置ROOTFS"></a>配置ROOTFS</h2><p>创建目录结构</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd _install</span><br><span class="line">$ mkdir -pv &#123;bin,sbin,etc/init.d,proc,sys,usr/&#123;bin,sbin&#125;,dev,tmp&#125;</span><br></pre></td></tr></table></figure>
 <p>创建<code>inittab</code>，init进程是kernel加载完成后启动的第一个进程，其配置文件<code>/etc/inittab</code>指定在不同的情况下执行不同的应用程序。busybox inittab文件格式参考<a href="https://github.com/brgl/busybox/blob/master/examples/inittab">官方说明</a></p>
@@ -239,7 +239,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     ioxera
   </div>
   <div class="footer-right">
