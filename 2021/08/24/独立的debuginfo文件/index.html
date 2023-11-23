@@ -1,158 +1,185 @@
 <!DOCTYPE html>
-<html lang=zh>
-<head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="前言在使用gcc编译源码时可以使用-g选项在二进制文件中保留调试信息，把二进制文件和调试信息合并在同一个文件中带来的一个显著问题是文件或库的SIZE增大，对于不关心调试的普通用户来说，调试信息是不必要的，且在系统安装和使用过程中显著增加了安装时间及磁盘空间占用。 为了解决这个问题，可以把调试信息从二进制文件中剥离出来保存在单独的文件中，某些linux发行版（redhat系列,debian系列等）将">
-<meta property="og:type" content="article">
-<meta property="og:title" content="独立的debuginfo文件">
-<meta property="og:url" content="https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/">
-<meta property="og:site_name" content="Ioxera&#39;s Blog">
-<meta property="og:description" content="前言在使用gcc编译源码时可以使用-g选项在二进制文件中保留调试信息，把二进制文件和调试信息合并在同一个文件中带来的一个显著问题是文件或库的SIZE增大，对于不关心调试的普通用户来说，调试信息是不必要的，且在系统安装和使用过程中显著增加了安装时间及磁盘空间占用。 为了解决这个问题，可以把调试信息从二进制文件中剥离出来保存在单独的文件中，某些linux发行版（redhat系列,debian系列等）将">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-08-24T08:10:33.000Z">
-<meta property="article:modified_time" content="2021-08-24T08:10:33.000Z">
-<meta property="article:author" content="ioxera">
-<meta property="article:tag" content="debufinfo">
-<meta name="twitter:card" content="summary">
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="author" content="ioxera" />
+  <meta name="description" content="God tells his believers that Satan is a terrible devil." />
+  
+  
+  <title>
     
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
+      独立的debuginfo文件 
       
       
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
+      |
     
-    <!-- title -->
-    <title>独立的debuginfo文件</title>
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
+     Ioxera&#39;s Blog
+  </title>
 
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/atom.xml" title="Ioxera&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-<meta name="generator" content="Hexo 6.2.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="http://github.com/ioxera">项目</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        
-        <li><a class="icon" aria-label="下一篇" href="/2021/08/10/%E4%BD%BF%E7%94%A8busybox%E6%9E%84%E5%BB%BA%E6%9C%80%E5%B0%8Frootfs/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&text=独立的debuginfo文件"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&is_video=false&description=独立的debuginfo文件"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=独立的debuginfo文件&body=Check out this article: https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&name=独立的debuginfo文件&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&t=独立的debuginfo文件"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90debuginfo%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">生成debuginfo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debug%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">3.</span> <span class="toc-text">debug文件中的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#centos%E4%B8%AD%E7%9A%84debuginfo%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-number">4.</span> <span class="toc-text">centos中的debuginfo软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debuginfo%E5%9C%A8%E5%86%85%E6%A0%B8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">debuginfo在内核漏洞分析中的应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">6.</span> <span class="toc-text">参考文献</span></a></li></ol>
-    </div>
-  </span>
-</div>
-
-    
-    <div class="content index py4">
-        
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle" itemprop="name headline">
-        独立的debuginfo文件
-    </h1>
-
-
-
-    <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">ioxera</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2021-08-24T08:10:33.000Z" itemprop="datePublished">2021-08-24</time>
-        
-      
-    </div>
-
-
-      
-
-      
-    <div class="article-tag">
-        <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="/tags/debufinfo/" rel="tag">debufinfo</a>
-    </div>
-
-
-    </div>
-  </header>
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
   
 
-  <div class="content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在使用gcc编译源码时可以使用<code>-g</code>选项在二进制文件中保留调试信息，把二进制文件和调试信息合并在同一个文件中带来的一个显著问题是文件或库的SIZE增大，对于不关心调试的普通用户来说，调试信息是不必要的，且在系统安装和使用过程中显著增加了安装时间及磁盘空间占用。</p>
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Ioxera</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">独立的debuginfo文件</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2021-08-24 16:10:33
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/debufinfo/" title="debufinfo">
+                    #debufinfo
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在使用gcc编译源码时可以使用<code>-g</code>选项在二进制文件中保留调试信息，把二进制文件和调试信息合并在同一个文件中带来的一个显著问题是文件或库的SIZE增大，对于不关心调试的普通用户来说，调试信息是不必要的，且在系统安装和使用过程中显著增加了安装时间及磁盘空间占用。</p>
 <p>为了解决这个问题，可以把调试信息从二进制文件中剥离出来保存在单独的文件中，某些linux发行版（redhat系列,debian系列等）将这些debuginfo文件打包成独立软件包。</p>
-<h2 id="生成debuginfo文件"><a href="#生成debuginfo文件" class="headerlink" title="生成debuginfo文件"></a>生成debuginfo文件</h2><p>GNU<code>binutils</code>工具包包含一个<code>objcopy</code>实用程序，可以使用以下命令生成单独的可执行&#x2F;调试信息文件对，这些命令从<code>a.out</code>可执行文件中删除了调试信息，并将其放入<code>a.out.deubug</code>文件中。</p>
+<h2 id="生成debuginfo文件"><a class="markdownIt-Anchor" href="#生成debuginfo文件"></a> 生成debuginfo文件</h2>
+<p>GNU<code>binutils</code>工具包包含一个<code>objcopy</code>实用程序，可以使用以下命令生成单独的可执行/调试信息文件对，这些命令从<code>a.out</code>可执行文件中删除了调试信息，并将其放入<code>a.out.deubug</code>文件中。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># objcopy --only-keep-debug a.out a.out.debug</span><br><span class="line"># strip -g a.out</span><br></pre></td></tr></table></figure>
 <p>在生成debuginfo独立文件以后，可以使用如下方式之一或同时使用，创建二进制文件和debuginfo文件的关联：</p>
 <ul>
@@ -163,7 +190,6 @@
 <li>使用<code>ld--Build ID</code>或GCC对应的<code>gcc -Wl，--build-ID</code>将Build ID嵌入到可执行文件中的<code>.note.gnu.build-id</code>节中。然后按照下文的搜索规则将debuginfo文件复制到指定路径下，并按build-id进行重命名</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># readelf -n ./a.out</span><br><span class="line">...</span><br><span class="line">Displaying notes found in: .note.gnu.build-id</span><br><span class="line">所有者            Data size   Description</span><br><span class="line">GNU                  0x00000014       NT_GNU_BUILD_ID (unique build ID bitstring)</span><br><span class="line">    Build ID: 5806c3389c3265d80ae315eba818ac8d2dc61a06</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
 <p>gdb支持两种指定debuginfo文件的方法：</p>
 <ul>
 <li>可执行文件包含一个<code>debug link</code>来指定debuginfo文件的名称，独立的debuginfo文件的名称通常为<code>executable.debug</code>，<code>debug link</code>还为debuginfo文件指定了32位CRC校验和，用于验证可执行文件和调试文件是否来自同一构建。</li>
@@ -172,21 +198,22 @@
 <p>根据提供debuginfo文件的不同方式，gdb具有不同的搜索路径：</p>
 <ul>
 <li>对于“debug link”方法，GDB在可执行文件的目录中查找命名文件，然后在名为.debug的目录的子目录中查找，最后在每个全局调试目录下的子目录中查找，该子目录的名称与可执行文件绝对文件名的前导目录相同</li>
-<li>对于“build ID”方法，GDB在每个全局调试目录的.build ID子目录中查找名为nn&#x2F;nnnnnn.debug的文件，其中nn是build ID位字符串的前2个十六进制字符，nnnnnnnn是位字符串的其余部分(实际生成ID字符串为32个或更多十六进制字符）</li>
+<li>对于“build ID”方法，GDB在每个全局调试目录的.build ID子目录中查找名为nn/nnnnnn.debug的文件，其中nn是build ID位字符串的前2个十六进制字符，nnnnnnnn是位字符串的其余部分(实际生成ID字符串为32个或更多十六进制字符）</li>
 </ul>
 <p>对于一个具体的二进制文件<code>a.out</code>，GDB的搜索路径如下：</p>
 <ol>
-<li>&lt;global debug directory&gt;&#x2F;.build-id&#x2F;nn&#x2F;nnnn…nnnn.debug</li>
-<li>&lt;the path of a.out&gt;&#x2F;a.out.debug</li>
-<li>&lt;the path of a.out&gt;&#x2F;.debug&#x2F;a.out.debug</li>
-<li>&lt;global debug directory&gt;&#x2F;&lt;the patch of a.out&gt;&#x2F;a.out.debug</li>
+<li>&lt;global debug directory&gt;/.build-id/nn/nnnn…nnnn.debug</li>
+<li>&lt;the path of a.out&gt;/a.out.debug</li>
+<li>&lt;the path of a.out&gt;/.debug/a.out.debug</li>
+<li>&lt;global debug directory&gt;/&lt;the patch of a.out&gt;/a.out.debug</li>
 </ol>
 <p><code>&lt;global debug directory&gt;</code>默认为<code>/usr/lib/debug/</code>。可以在gdb中通过<code>show debug-file-directory</code>及<code>set debug-file-directory DIRECTORIES</code>命令分别查看和设置此目录的值。</p>
-<h2 id="debug文件中的信息"><a href="#debug文件中的信息" class="headerlink" title="debug文件中的信息"></a>debug文件中的信息</h2><p>gcc默认会采用<a href="http://dwarfstd.org/doc/DWARF4.pdf">DWARF4</a>格式来保存调试信息，可以通过<code>readelf -w a.out.debug</code>来查看文件中的信息。</p>
+<h2 id="debug文件中的信息"><a class="markdownIt-Anchor" href="#debug文件中的信息"></a> debug文件中的信息</h2>
+<p>gcc默认会采用<a href="http://dwarfstd.org/doc/DWARF4.pdf">DWARF4</a>格式来保存调试信息，可以通过<code>readelf -w a.out.debug</code>来查看文件中的信息。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># readelf -w ./a.out.debug                </span><br><span class="line">...</span><br><span class="line">.debug_info 节的内容:</span><br><span class="line">  编译单元 @ 偏移 0x0:</span><br><span class="line">   长度：        0xc4 (32-bit)</span><br><span class="line">   版本：        5</span><br><span class="line">   Unit Type:     DW_UT_compile (1)</span><br><span class="line">   缩写偏移量：    0x0</span><br><span class="line">   指针大小：    8</span><br><span class="line"> &lt;0&gt;&lt;c&gt;：缩写编号：3 (DW_TAG_compile_unit)</span><br><span class="line">    &lt;d&gt;   DW_AT_producer    : (indirect string, offset: 0x2f): GNU C17 11.1.0 -mtune=generic -march=x86-64 -g -O0</span><br><span class="line">    &lt;11&gt;   DW_AT_language    : 29	(C11)</span><br><span class="line">    &lt;12&gt;   DW_AT_name        : (indirect line string, offset: 0x13): test.c</span><br><span class="line">    &lt;16&gt;   DW_AT_comp_dir    : (indirect line string, offset: 0x0): /home/ioxera/Codes</span><br><span class="line">    &lt;1a&gt;   DW_AT_low_pc      : 0x401795</span><br><span class="line">    &lt;22&gt;   DW_AT_high_pc     : 0xb</span><br><span class="line">    &lt;2a&gt;   DW_AT_stmt_list   : 0x0</span><br><span class="line"> &lt;1&gt;&lt;2e&gt;：缩写编号：1 (DW_TAG_base_type)</span><br><span class="line">    &lt;2f&gt;   DW_AT_byte_size   : 8</span><br><span class="line">    &lt;30&gt;   DW_AT_encoding    : 7	(unsigned)</span><br><span class="line">    &lt;31&gt;   DW_AT_name        : (indirect string, offset: 0x0): long unsigned int</span><br><span class="line"> &lt;1&gt;&lt;35&gt;：缩写编号：1 (DW_TAG_base_type)</span><br><span class="line">    &lt;36&gt;   DW_AT_byte_size   : 4</span><br><span class="line">    &lt;37&gt;   DW_AT_encoding    : 7	(unsigned)</span><br><span class="line">    &lt;38&gt;   DW_AT_name        : (indirect string, offset: 0x5): unsigned int</span><br><span class="line"> &lt;1&gt;&lt;3c&gt;：缩写编号：4 (DW_TAG_pointer_type)</span><br><span class="line">    &lt;3d&gt;   DW_AT_byte_size   : 8</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>DWARF内部通过DIE（debugging information entry)形成一颗调用树，DWARF支持C&#x2F;C++&#x2F;JAVA等各种语言调试信息的表达且并不依赖ELF文件结构。</p>
-<h2 id="centos中的debuginfo软件包"><a href="#centos中的debuginfo软件包" class="headerlink" title="centos中的debuginfo软件包"></a>centos中的debuginfo软件包</h2><p>在centos中使用gdb调试依赖glibc的二进制文件时，需要安装<code>glibc-debuginfo</code>软件包，在使用systemtap对内核进行探测之前需要安装<code>kernel-debuginfo</code>软件包，否则会报告找不到调试符号的错误信息。</p>
+<p>DWARF内部通过DIE（debugging information entry)形成一颗调用树，DWARF支持C/C++/JAVA等各种语言调试信息的表达且并不依赖ELF文件结构。</p>
+<h2 id="centos中的debuginfo软件包"><a class="markdownIt-Anchor" href="#centos中的debuginfo软件包"></a> centos中的debuginfo软件包</h2>
+<p>在centos中使用gdb调试依赖glibc的二进制文件时，需要安装<code>glibc-debuginfo</code>软件包，在使用systemtap对内核进行探测之前需要安装<code>kernel-debuginfo</code>软件包，否则会报告找不到调试符号的错误信息。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># rpm -ql glibc-debuginfo</span><br><span class="line">/usr/lib/debug</span><br><span class="line">/usr/lib/debug/.build-id</span><br><span class="line">/usr/lib/debug/.build-id/00</span><br><span class="line">/usr/lib/debug/.build-id/00/3018d58fff1bc866f691a02b3d9269be42e5cd</span><br><span class="line">/usr/lib/debug/.build-id/00/3018d58fff1bc866f691a02b3d9269be42e5cd.debug</span><br><span class="line">/usr/lib/debug/.build-id/01</span><br><span class="line">/usr/lib/debug/.build-id/01/07534bb658cedceb7d549d779458ef53178fbe</span><br><span class="line">/usr/lib/debug/.build-id/01/07534bb658cedceb7d549d779458ef53178fbe.debug</span><br><span class="line">...</span><br><span class="line">/usr/lib/debug/usr</span><br><span class="line">/usr/lib/debug/usr/lib64</span><br><span class="line">/usr/lib/debug/usr/lib64/audit</span><br><span class="line">/usr/lib/debug/usr/lib64/audit/sotruss-lib.so.debug</span><br><span class="line">/usr/lib/debug/usr/lib64/gconv</span><br><span class="line">/usr/lib/debug/usr/lib64/gconv/ANSI_X3.110.so.debug</span><br><span class="line">/usr/lib/debug/usr/lib64/gconv/ARMSCII-8.so.debug</span><br><span class="line">...</span><br><span class="line">/usr/src/debug</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686/argp</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686/argp/argp-ba.c</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686/argp/argp-eexst.c</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686/argp/argp-fmtstream.c</span><br><span class="line">/usr/src/debug/glibc-2.17-c758a686/argp/argp-fmtstream.h</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>使用<code>rpm -ql glibc-debuginfo</code>查看软件包中的文件发现主要有三类文件：</p>
 <ul>
@@ -195,152 +222,380 @@
 <li>存放在<code>/usr/src/debug/</code>下的源代码文件。</li>
 </ul>
 <p>这些文件和我们上面介绍的debuginfo文件内容基本一致，可以按照上述方式查看文件内容。</p>
-<h2 id="debuginfo在内核漏洞分析中的应用"><a href="#debuginfo在内核漏洞分析中的应用" class="headerlink" title="debuginfo在内核漏洞分析中的应用"></a>debuginfo在内核漏洞分析中的应用</h2><p>在内核漏洞分析中，需要对内核进行调试，并分析目标结构体在二进制文件中的偏移。但是发行版提供的内核通常剥离了debuginfo信息，这时就可以从发行版的<code>kernel-debuginfo</code>软件包中获取调试信息。</p>
+<h2 id="debuginfo在内核漏洞分析中的应用"><a class="markdownIt-Anchor" href="#debuginfo在内核漏洞分析中的应用"></a> debuginfo在内核漏洞分析中的应用</h2>
+<p>在内核漏洞分析中，需要对内核进行调试，并分析目标结构体在二进制文件中的偏移。但是发行版提供的内核通常剥离了debuginfo信息，这时就可以从发行版的<code>kernel-debuginfo</code>软件包中获取调试信息。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># rpm -ql kernel-debuginfo</span><br><span class="line">...</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vdso</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vdso/vdso.so.debug</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vdso/vdso32-int80.so.debug</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vdso/vdso32-syscall.so.debug</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vdso/vdso32-sysenter.so.debug</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vmlinux</span><br><span class="line">...</span><br><span class="line"># file /usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vmlinux</span><br><span class="line">/usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vmlinux: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=145340cd0f97d560527fa7222afae8c87699e72b, not stripped</span><br></pre></td></tr></table></figure>
 <p><code>kernel-debuginfo</code>中包含各个模块的debuginfo文件及ELF结构的<code>vmlinux</code>文件，此<code>vmlinux</code>文件可用于在gdb调试内核时提供符号信息及确定结构体偏移。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"># pahole -C cred /usr/lib/debug/lib/modules/3.10.0-1160.31.1.el7.x86_64/vmlinux                                                 </span><br><span class="line">struct cred &#123;</span><br><span class="line">	atomic_t                   usage;                /*     0     4 */</span><br><span class="line">	kuid_t                     uid;                  /*     4     4 */</span><br><span class="line">	kgid_t                     gid;                  /*     8     4 */</span><br><span class="line">	kuid_t                     suid;                 /*    12     4 */</span><br><span class="line">	kgid_t                     sgid;                 /*    16     4 */</span><br><span class="line">	kuid_t                     euid;                 /*    20     4 */</span><br><span class="line">	kgid_t                     egid;                 /*    24     4 */</span><br><span class="line">	kuid_t                     fsuid;                /*    28     4 */</span><br><span class="line">	kgid_t                     fsgid;                /*    32     4 */</span><br><span class="line">	unsigned int               securebits;           /*    36     4 */</span><br><span class="line">	kernel_cap_t               cap_inheritable;      /*    40     8 */</span><br><span class="line">	kernel_cap_t               cap_permitted;        /*    48     8 */</span><br><span class="line">	kernel_cap_t               cap_effective;        /*    56     8 */</span><br><span class="line">	/* --- cacheline 1 boundary (64 bytes) --- */</span><br><span class="line">	kernel_cap_t               cap_bset;             /*    64     8 */</span><br><span class="line">	unsigned char              jit_keyring;          /*    72     1 */</span><br><span class="line"></span><br><span class="line">	/* XXX 7 bytes hole, try to pack */</span><br><span class="line"></span><br><span class="line">	struct key *               session_keyring;      /*    80     8 */</span><br><span class="line">	struct key *               process_keyring;      /*    88     8 */</span><br><span class="line">	struct key *               thread_keyring;       /*    96     8 */</span><br><span class="line">	struct key *               request_key_auth;     /*   104     8 */</span><br><span class="line">	void *                     security;             /*   112     8 */</span><br><span class="line">	struct user_struct *       user;                 /*   120     8 */</span><br><span class="line">	/* --- cacheline 2 boundary (128 bytes) --- */</span><br><span class="line">	struct user_namespace *    user_ns;              /*   128     8 */</span><br><span class="line">	struct group_info *        group_info;           /*   136     8 */</span><br><span class="line">	struct callback_head       rcu;                  /*   144    16 */</span><br><span class="line">	kernel_cap_t               cap_ambient;          /*   160     8 */</span><br><span class="line"></span><br><span class="line">	/* size: 168, cachelines: 3, members: 25 */</span><br><span class="line">	/* sum members: 161, holes: 1, sum holes: 7 */</span><br><span class="line">	/* last cacheline: 40 bytes */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>使用<code>pahole</code>工具可以解析调试信息并快速确定二进制文件中目标结构体成员及偏移，后两列分别给出了成员变量在结构体中的偏移及成员变量的大小。</p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<h2 id="参考文献"><a class="markdownIt-Anchor" href="#参考文献"></a> 参考文献</h2>
+<ol>
 <li><a href="https://sourceware.org/gdb/onlinedocs/gdb/Separate-Debug-Files.html">Debugging Information in Separate Files</a></li>
 <li><a href="http://dwarfstd.org/doc/DWARF4.pdf">DWARF4</a></li>
 </ol>
 
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/08/10/%E4%BD%BF%E7%94%A8busybox%E6%9E%84%E5%BB%BA%E6%9C%80%E5%B0%8Frootfs/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2021-08-24 16:10:33
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/debufinfo/" title="debufinfo">
+                        #debufinfo
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2023/11/20/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
   </div>
-</article>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90debuginfo%E6%96%87%E4%BB%B6"><span class="toc-text"> 生成debuginfo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debug%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-text"> debug文件中的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#centos%E4%B8%AD%E7%9A%84debuginfo%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-text"> centos中的debuginfo软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debuginfo%E5%9C%A8%E5%86%85%E6%A0%B8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text"> debuginfo在内核漏洞分析中的应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text"> 参考文献</span></a></li></ol>
+      
+    </div>
+  </div>
 
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
 
 
         
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="http://github.com/ioxera">项目</a></li>
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" href="https://github.com/ioxera/">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
         
-      </ul>
-    </div>
-
-    <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90debuginfo%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">生成debuginfo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debug%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">3.</span> <span class="toc-text">debug文件中的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#centos%E4%B8%AD%E7%9A%84debuginfo%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-number">4.</span> <span class="toc-text">centos中的debuginfo软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#debuginfo%E5%9C%A8%E5%86%85%E6%A0%B8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">debuginfo在内核漏洞分析中的应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">6.</span> <span class="toc-text">参考文献</span></a></li></ol>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&text=独立的debuginfo文件"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&is_video=false&description=独立的debuginfo文件"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=独立的debuginfo文件&body=Check out this article: https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&title=独立的debuginfo文件"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&name=独立的debuginfo文件&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/&t=独立的debuginfo文件"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
+        <li>
+          
+            <a title="email" href="mailto:mail://ioxera@foxmail.com">
+              <i class="iconfont icon-envelope"></i>
+            </a>
+            
+        </li>
+        
+    </ul>
   </div>
+  
+    
+    <div class="footer-more">
+      
+        <a href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
 </div>
 
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
         
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2021-2023
-    ioxera
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
   </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="http://github.com/ioxera">项目</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
     </div>
-    <!-- styles -->
+  </div>
 
-
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
- 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
-
-
-
-
-<!-- clipboard -->
-
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
-  
   <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
-    btn += '<i class="far fa-clone"></i>';
-    btn += '</span>'; 
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
       }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "复制成功！");
-      e.clearSelection();
-    })
-  })
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
   </script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Google Analytics -->
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
 
-<!-- Baidu Analytics -->
+  
+<script src="/js/colorscheme.js"></script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Umami Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
-</body>
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6 + '&url=' + https%3A%2F%2Fioxera.github.io%2F2021%2F08%2F24%2F%25E7%258B%25AC%25E7%25AB%258B%25E7%259A%2584debuginfo%25E6%2596%2587%25E4%25BB%25B6%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/08/24/%E7%8B%AC%E7%AB%8B%E7%9A%84debuginfo%E6%96%87%E4%BB%B6/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
 </html>

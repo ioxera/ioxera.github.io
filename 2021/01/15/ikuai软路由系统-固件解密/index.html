@@ -1,331 +1,575 @@
 <!DOCTYPE html>
-<html lang=zh>
-<head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ikuai软路由系统-固件解密">
-<meta property="og:url" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/">
-<meta property="og:site_name" content="Ioxera&#39;s Blog">
-<meta property="og:description" content="ikuai简介ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。 因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。 固件分析在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-30-05.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-50-28.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_14-11-21.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_15-45-59.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_16-55-00.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_17-34-18.png">
-<meta property="og:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_18-18-34.png">
-<meta property="article:published_time" content="2021-01-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-01-14T16:00:00.000Z">
-<meta property="article:author" content="ioxera">
-<meta property="article:tag" content="ikuai">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png">
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="author" content="ioxera" />
+  <meta name="description" content="God tells his believers that Satan is a terrible devil." />
+  
+  
+  <title>
     
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
+      ikuai软路由系统-固件解密 
       
       
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
+      |
     
-    <!-- title -->
-    <title>ikuai软路由系统-固件解密</title>
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
+     Ioxera&#39;s Blog
+  </title>
 
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/atom.xml" title="Ioxera&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-<meta name="generator" content="Hexo 6.2.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="http://github.com/ioxera">项目</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="上一篇" href="/2021/08/10/%E4%BD%BF%E7%94%A8busybox%E6%9E%84%E5%BB%BA%E6%9C%80%E5%B0%8Frootfs/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="下一篇" href="/2018/04/03/MikroTik%20RouterOS%20%3C%206.38.4%20(x86)%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&text=ikuai软路由系统-固件解密"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&is_video=false&description=ikuai软路由系统-固件解密"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ikuai软路由系统-固件解密&body=Check out this article: https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&name=ikuai软路由系统-固件解密&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&t=ikuai软路由系统-固件解密"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ikuai%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">ikuai简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">固件分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86"><span class="toc-number">3.</span> <span class="toc-text">固件解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#patch%E5%86%85%E6%A0%B8"><span class="toc-number">4.</span> <span class="toc-text">patch内核</span></a></li></ol>
-    </div>
-  </span>
-</div>
-
-    
-    <div class="content index py4">
-        
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle" itemprop="name headline">
-        ikuai软路由系统-固件解密
-    </h1>
-
-
-
-    <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">ioxera</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2021-01-14T16:00:00.000Z" itemprop="datePublished">2021-01-15</time>
-        
-      
-    </div>
-
-
-      
-
-      
-    <div class="article-tag">
-        <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="/tags/ikuai/" rel="tag">ikuai</a>
-    </div>
-
-
-    </div>
-  </header>
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
   
 
-  <div class="content" itemprop="articleBody">
-    <h2 id="ikuai简介"><a href="#ikuai简介" class="headerlink" title="ikuai简介"></a>ikuai简介</h2><p>ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。</p>
-<p>因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。</p>
-<h2 id="固件分析"><a href="#固件分析" class="headerlink" title="固件分析"></a>固件分析</h2><p>在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来ikuai软路由系统ISO、IMG、GHOST、BIN四种镜像，且主要支持x86架构。这里直接从官网下载ISO镜像，并在virtualbox虚拟机中进行安装。安装成功后将ikuai路由器系统的磁盘挂载到其他的linux系统上（这里使用ubuntu系统），可以看到ikuai系统的分区和分区内的文件</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png" alt="ikuai系统分区"></p>
-<p>ikuai系统共有三个分区（一个启动分区、一个配置存储分区、一个数据存储分区），其中启动分区的boot文件夹内存储了内核文件vmlinuz，initrd文件rootfs，及grub的启动文件。grub.cfg文件如下：</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png" alt="grub.cfg"></p>
-<p>grub.cfg中指定了内核启动的参数，<code>root=/dev/ram0</code> 说明ikuai系统使用了ramfs来作为系统的root目录文件系统，并把 <code>/boot/rootfs</code> 作为initrd直接加载到ramfs中。在第二个启动项中指定了串口ttyS0来打印终端信息，波特率为115200。这里为了可以在启动时临时编辑启动项，修改timeout设置为-1,让grub暂停在启动项选择页面上。</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-30-05.png" alt="vmlinuz and rootfs info"></p>
-<p>查看vmlinuz和rootfs的文件类型可以看到内核版本为3.18.67，打包为bzImage格式，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了。</p>
-<p>打开虚拟机的串口配置，为虚拟机添加一个串口，在grub上选择第二个带有串口参数的启动项，按e键编辑启动项，在linux命令上增加 <code>init=/bin/sh</code> 参数：</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_13-50-28.png" alt="grub cmd"></p>
-<p>在host机器上执行 <code>socat -d -d /tmp/serial PTY</code> 创建一个和虚拟机串口通信的串口设备文件 <code>/dev/pts/1</code>，<code>/tmp/serial</code> 为虚拟机串口配置中指定的本地socket文件。在另一个终端中执行 <code>minicom -b 115200 -D /dev/pts/1</code> 连接虚拟机的串口，虚拟机启动过程中的内核信息就通过串口打印到minicom中了。在minicom中查看虚拟机的内核启动信息及根文件系统结构：</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_14-11-21.png" alt="kernel log and rootfs struction"></p>
-<p>在内核日志中的最后几行中可以看到RAMDISK文件系统的加载记录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RAMDISK: xz image found at block 0</span><br><span class="line">EXT4-fs (ram0): mounted filesystem without journal. Opts: (null)</span><br><span class="line">VFS: Mounted root (ext4 filesystem) readonly on device 1:0.</span><br></pre></td></tr></table></figure>
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 
-<p>从这几条记录基本可以断定rootfs文件应该是一个xz压缩方式打包的ext4镜像文件。内核日志起始阶段还记录了kernel的参数和initrd的类型信息，感兴趣的可以自己查看。</p>
-<p>根文件系统是一个正常linux的根文件系统结构，但是通过修改内核启动参数，替换init初始化程序的方式，无法进行正常的系统初始化，只能看到加载后的根文件系统的原始结构，无法查看系统正常运行状态的信息，甚至应用层运行最基本的环境也没有初始化，这并不是想要的结果。但是可以先浏览一下根文件系统中的文件，查看下系统配置，比较下和普通的linux发行版的初始化流程有什么差别。想要修改文件系统，查看系统运行状态，调试系统运行状态的二进制文件，依然需要解密rootfs文件。</p>
-<h2 id="固件解密"><a href="#固件解密" class="headerlink" title="固件解密"></a>固件解密</h2><p>linux系统启动过程中有两处加载initrd的地方，第一处是grub中normal模式下通过initrd命令加载，第二处在linux内核中对initrd进行解压并加载到initrd_start全局变量指定的地址处。这里猜测厂家是在内核中做了手脚，而非在grub中，下面验证我的想法：</p>
-<p>在ubuntu系统中随意编辑rootfs文件并保存，在ikuai系统的grub启动项选择界面按c键进入命令模式，按照grub.cfg中的内核参数手动键入加载指令，分别加载kernel和initrd，并未报告出错信息，文件正常加载了，返回启动项选择界面选择第二个启动项进入系统，在minicom中看到内核未正常启动并报告 <code>&quot;Kernel panic - not syncing: Invaild rootfs&quot;</code> ，猜测daxiong同学在内核中加了对rootfs文件的解密和校验流程。</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_15-45-59.png" alt="grub load initrd"><br><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_16-55-00.png" alt="grub load initrd"></p>
-<p>搜索对应内核版本的源码发现没有 <code>&quot;Invaild rootfs&quot;</code> 字符串，猜测此字符串应该是daxiong同学添加的报错信息。使用内核源码的extract-vmlinux工具对<a href="vmlinuz">vmlinuz</a>文件进行解包得到vmlinux可执行文件，此文件是静态链接的elf格式文件，放入IDA查看 <code>&quot;Invaild rootfs&quot;</code> 字符串的交叉引用定位到添加的解密部分在内核的populate_rootfs函数中：</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_17-34-18.png" alt="populate_rootfs function disassembly"></p>
-<p>逆向分析之后的解密流程如上图所示，使用c语言还原<a href="decode_rootfs.c">解密算法</a>，对rootfs文件进行解密之后得到xz压缩格式的压缩文件，使用<code>xz -dk rootfs.xz</code>命令进行解包得到一个ext2文件系统镜像，使用ext2rd工具对镜像进行解包，得到和上面通过修改init进程看到的根文件系统结构相同的目录树:</p>
-<p><img src="/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/%E6%88%AA%E5%9B%BE_2021-01-15_18-18-34.png" alt="rootfs info"><br>至此固件解密完成。</p>
-<h2 id="patch内核"><a href="#patch内核" class="headerlink" title="patch内核"></a>patch内核</h2><p>得到解密后的rootfs文件之后，可以修改内部文件并使用 <code>xz -zk9 -C crc32 rootfs</code> 命令重新打包。重新打包后的rootfs使用原内核镜像加载同样过不了校验，因为解密代码对xz格式的文件又进行了一遍操作，并验证hash。对daxiong同学的解密算法进行逆运算得到加密算法重新加密rootfs显然不是一个明智的做法，况且不是所有的解密算法都可以逆运算推导出加密算法。简单的做法是对原内核进行<a href="vmlinux.patch">patch</a>(由<a href="http://www.daemonology.net/bsdiff/">bsdiff</a>工具生成），跳过解密流程，然后重新打包回bzImage格式。</p>
-<p>重新编译一份3.18.67的内核，把编译之后的vmlinux替换为patch后的daxiong同学的vmlinux，然后运行 <code>make -o ./vmlinux bzImage</code> 命令重新打包<a href="bzImage.repacket">bzImage</a>，将得到的bzImage文件(重命名为vmlinuz)和重打包后的rootfs.xz文件复制到ikuai系统启动分区的boot文件夹中，替换原始的vmlinuz和rootfs，重新引导系统，则成功进入系统。</p>
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
 
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Ioxera</a></div>
   </div>
-</article>
-
-
-
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="http://github.com/ioxera">项目</a></li>
-        
-      </ul>
-    </div>
-
-    <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ikuai%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">ikuai简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">固件分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86"><span class="toc-number">3.</span> <span class="toc-text">固件解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#patch%E5%86%85%E6%A0%B8"><span class="toc-number">4.</span> <span class="toc-text">patch内核</span></a></li></ol>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&text=ikuai软路由系统-固件解密"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&is_video=false&description=ikuai软路由系统-固件解密"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ikuai软路由系统-固件解密&body=Check out this article: https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&title=ikuai软路由系统-固件解密"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&name=ikuai软路由系统-固件解密&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/&t=ikuai软路由系统-固件解密"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2021-2023
-    ioxera
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="http://github.com/ioxera">项目</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
-    </div>
-    <!-- styles -->
+<script src="/js/activeNav.js"></script>
 
 
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
 
-    <!-- jquery -->
- 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
-
-
-
-
-<!-- clipboard -->
+  <!-- LaTex Display -->
 
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
-    btn += '<i class="far fa-clone"></i>';
-    btn += '</span>'; 
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
       }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "复制成功！");
-      e.clearSelection();
-    })
-  })
+    }
   </script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Google Analytics -->
 
-<!-- Baidu Analytics -->
+  <!-- clipboard -->
 
-<!-- Cloudflare Analytics -->
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
 
-<!-- Umami Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
-</body>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">ikuai软路由系统-固件解密</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2021-01-15 00:00:00
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/ikuai/" title="ikuai">
+                    #ikuai
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="ikuai简介"><a class="markdownIt-Anchor" href="#ikuai简介"></a> ikuai简介</h2>
+<p>ikuai是国内一家提供商业组网解决方案的厂家，硬件产品主要有交换机、路由、网桥、室内外AP等，软件产品主要是ikuai软路由系统及ikuai云。ikuai产品在小型企业、学校、写字楼、商场、酒店、医院、商业休闲场所有广泛的应用。</p>
+<p>因为想看一下这个在社会上应用广泛的厂家的产品的安全性做的怎么样，遂有此文。</p>
+<h2 id="固件分析"><a class="markdownIt-Anchor" href="#固件分析"></a> 固件分析</h2>
+<p>在进行此次分析时ikuai软路由系统的最新版本为3.4.6,官网提供来ikuai软路由系统ISO、IMG、GHOST、BIN四种镜像，且主要支持x86架构。这里直接从官网下载ISO镜像，并在virtualbox虚拟机中进行安装。安装成功后将ikuai路由器系统的磁盘挂载到其他的linux系统上（这里使用ubuntu系统），可以看到ikuai系统的分区和分区内的文件</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_13-10-54.png" alt="ikuai系统分区" /></p>
+<p>ikuai系统共有三个分区（一个启动分区、一个配置存储分区、一个数据存储分区），其中启动分区的boot文件夹内存储了内核文件vmlinuz，initrd文件rootfs，及grub的启动文件。grub.cfg文件如下：</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_13-19-34.png" alt="grub.cfg" /></p>
+<p>grub.cfg中指定了内核启动的参数，<code>root=/dev/ram0</code> 说明ikuai系统使用了ramfs来作为系统的root目录文件系统，并把 <code>/boot/rootfs</code> 作为initrd直接加载到ramfs中。在第二个启动项中指定了串口ttyS0来打印终端信息，波特率为115200。这里为了可以在启动时临时编辑启动项，修改timeout设置为-1,让grub暂停在启动项选择页面上。</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_13-30-05.png" alt="vmlinuz and rootfs info" /></p>
+<p>查看vmlinuz和rootfs的文件类型可以看到内核版本为3.18.67，打包为bzImage格式，编译人员是daxiong同学，编译时间是2020年11月28日。rootfs是一个数据文件，看不到文件格式信息，猜测厂商为了保护自己的知识产权，把rootfs给加密了。</p>
+<p>打开虚拟机的串口配置，为虚拟机添加一个串口，在grub上选择第二个带有串口参数的启动项，按e键编辑启动项，在linux命令上增加 <code>init=/bin/sh</code> 参数：</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_13-50-28.png" alt="grub cmd" /></p>
+<p>在host机器上执行 <code>socat -d -d /tmp/serial PTY</code> 创建一个和虚拟机串口通信的串口设备文件 <code>/dev/pts/1</code>，<code>/tmp/serial</code> 为虚拟机串口配置中指定的本地socket文件。在另一个终端中执行 <code>minicom -b 115200 -D /dev/pts/1</code> 连接虚拟机的串口，虚拟机启动过程中的内核信息就通过串口打印到minicom中了。在minicom中查看虚拟机的内核启动信息及根文件系统结构：</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_14-11-21.png" alt="kernel log and rootfs struction" /></p>
+<p>在内核日志中的最后几行中可以看到RAMDISK文件系统的加载记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RAMDISK: xz image found at block 0</span><br><span class="line">EXT4-fs (ram0): mounted filesystem without journal. Opts: (null)</span><br><span class="line">VFS: Mounted root (ext4 filesystem) readonly on device 1:0.</span><br></pre></td></tr></table></figure>
+<p>从这几条记录基本可以断定rootfs文件应该是一个xz压缩方式打包的ext4镜像文件。内核日志起始阶段还记录了kernel的参数和initrd的类型信息，感兴趣的可以自己查看。</p>
+<p>根文件系统是一个正常linux的根文件系统结构，但是通过修改内核启动参数，替换init初始化程序的方式，无法进行正常的系统初始化，只能看到加载后的根文件系统的原始结构，无法查看系统正常运行状态的信息，甚至应用层运行最基本的环境也没有初始化，这并不是想要的结果。但是可以先浏览一下根文件系统中的文件，查看下系统配置，比较下和普通的linux发行版的初始化流程有什么差别。想要修改文件系统，查看系统运行状态，调试系统运行状态的二进制文件，依然需要解密rootfs文件。</p>
+<h2 id="固件解密"><a class="markdownIt-Anchor" href="#固件解密"></a> 固件解密</h2>
+<p>linux系统启动过程中有两处加载initrd的地方，第一处是grub中normal模式下通过initrd命令加载，第二处在linux内核中对initrd进行解压并加载到initrd_start全局变量指定的地址处。这里猜测厂家是在内核中做了手脚，而非在grub中，下面验证我的想法：</p>
+<p>在ubuntu系统中随意编辑rootfs文件并保存，在ikuai系统的grub启动项选择界面按c键进入命令模式，按照grub.cfg中的内核参数手动键入加载指令，分别加载kernel和initrd，并未报告出错信息，文件正常加载了，返回启动项选择界面选择第二个启动项进入系统，在minicom中看到内核未正常启动并报告 <code>&quot;Kernel panic - not syncing: Invaild rootfs&quot;</code> ，猜测daxiong同学在内核中加了对rootfs文件的解密和校验流程。</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_15-45-59.png" alt="grub load initrd" /><br />
+<img src="%E6%88%AA%E5%9B%BE_2021-01-15_16-55-00.png" alt="grub load initrd" /></p>
+<p>搜索对应内核版本的源码发现没有 <code>&quot;Invaild rootfs&quot;</code> 字符串，猜测此字符串应该是daxiong同学添加的报错信息。使用内核源码的extract-vmlinux工具对<a href="vmlinuz">vmlinuz</a>文件进行解包得到vmlinux可执行文件，此文件是静态链接的elf格式文件，放入IDA查看 <code>&quot;Invaild rootfs&quot;</code> 字符串的交叉引用定位到添加的解密部分在内核的populate_rootfs函数中：</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_17-34-18.png" alt="populate_rootfs function disassembly" /></p>
+<p>逆向分析之后的解密流程如上图所示，使用c语言还原<a href="decode_rootfs.c">解密算法</a>，对rootfs文件进行解密之后得到xz压缩格式的压缩文件，使用<code>xz -dk rootfs.xz</code>命令进行解包得到一个ext2文件系统镜像，使用ext2rd工具对镜像进行解包，得到和上面通过修改init进程看到的根文件系统结构相同的目录树:</p>
+<p><img src="%E6%88%AA%E5%9B%BE_2021-01-15_18-18-34.png" alt="rootfs info" /><br />
+至此固件解密完成。</p>
+<h2 id="patch内核"><a class="markdownIt-Anchor" href="#patch内核"></a> patch内核</h2>
+<p>得到解密后的rootfs文件之后，可以修改内部文件并使用 <code>xz -zk9 -C crc32 rootfs</code> 命令重新打包。重新打包后的rootfs使用原内核镜像加载同样过不了校验，因为解密代码对xz格式的文件又进行了一遍操作，并验证hash。对daxiong同学的解密算法进行逆运算得到加密算法重新加密rootfs显然不是一个明智的做法，况且不是所有的解密算法都可以逆运算推导出加密算法。简单的做法是对原内核进行<a href="vmlinux.patch">patch</a>(由<a href="http://www.daemonology.net/bsdiff/">bsdiff</a>工具生成），跳过解密流程，然后重新打包回bzImage格式。</p>
+<p>重新编译一份3.18.67的内核，把编译之后的vmlinux替换为patch后的daxiong同学的vmlinux，然后运行 <code>make -o ./vmlinux bzImage</code> 命令重新打包<a href="bzImage.repacket">bzImage</a>，将得到的bzImage文件(重命名为vmlinuz)和重打包后的rootfs.xz文件复制到ikuai系统启动分区的boot文件夹中，替换原始的vmlinuz和rootfs，重新引导系统，则成功进入系统。</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2018/04/03/MikroTik%20RouterOS%20%3C%206.38.4%20(x86)%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2021-01-15 00:00:00
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/ikuai/" title="ikuai">
+                        #ikuai
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2021/08/10/%E4%BD%BF%E7%94%A8busybox%E6%9E%84%E5%BB%BA%E6%9C%80%E5%B0%8Frootfs/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ikuai%E7%AE%80%E4%BB%8B"><span class="toc-text"> ikuai简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90"><span class="toc-text"> 固件分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86"><span class="toc-text"> 固件解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#patch%E5%86%85%E6%A0%B8"><span class="toc-text"> patch内核</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" href="https://github.com/ioxera/">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+        <li>
+          
+            <a title="email" href="mailto:mail://ioxera@foxmail.com">
+              <i class="iconfont icon-envelope"></i>
+            </a>
+            
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86 + '&url=' + https%3A%2F%2Fioxera.github.io%2F2021%2F01%2F15%2Fikuai%25E8%25BD%25AF%25E8%25B7%25AF%25E7%2594%25B1%25E7%25B3%25BB%25E7%25BB%259F-%25E5%259B%25BA%25E4%25BB%25B6%25E8%25A7%25A3%25E5%25AF%2586%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=https://ioxera.github.io/2021/01/15/ikuai%E8%BD%AF%E8%B7%AF%E7%94%B1%E7%B3%BB%E7%BB%9F-%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%AF%86/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
 </html>
