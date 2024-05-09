@@ -1,0 +1,32 @@
+baseURL = 'https://ioxera.github.io/'
+languageCode = 'zh-cn'
+title = 'Ioxera'
+theme = 'dead-simple'
+
+cleanDestinationDir = true
+enabelEmoji = true
+enableInlineShortcodes = true
+enableRobotsTXT = true
+hasCJKLanguage = true
+timeZone = 'Asia/Shanghai'
+
+[menu]
+[[menu.main]]
+    name = "<u>H</u>ome"
+    url = "/"
+    weight = 1
+[[menu.main]]
+    name = "<u>T</u>ags"
+    url = "/tags"
+    weight = 3
+    
+[markup]
+    defaultMarkdownHandler = 'goldmark'
+[markup.highlight]
+    style = "monokailight"
+    lineNumbersInTable = true
+    tabWidth = 4
+[markup.goldmark.renderer]
+    unsafe = true
+  
+

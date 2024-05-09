@@ -1,0 +1,155 @@
+{
+  "main": {
+    "id": "aae8d4dee102d301",
+    "type": "split",
+    "children": [
+      {
+        "id": "1d0d501480324416",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ba01f2237c1f2e9e",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "99afca664bdb8f29",
+    "type": "split",
+    "children": [
+      {
+        "id": "1b1f02d95b9d13c7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f311ac1b7d49e61b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "5d04b1a6e120a205",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "90c1e9ced356181d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "eb9a33ae4988680f",
+    "type": "split",
+    "children": [
+      {
+        "id": "cb14f11def8db8c1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ea94728ef7ab8c3d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "f87c158f3056f2b0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "1a58e2df1ce39d4c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": false
+              }
+            }
+          },
+          {
+            "id": "7d8e3a8949932b94",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "ba01f2237c1f2e9e",
+  "lastOpenFiles": [
+    "渗透测试.md",
+    "使用Codeql进行污点跟踪.md",
+    "使用busybox构建最小rootfs.md",
+    "独立的debuginfo文件.md",
+    "MikroTik RouterOS < 6.38.4 (x86) 远程代码执行漏洞分析/index.md",
+    "ikuai软路由系统-固件解密/index.md",
+    "语法分析/index.md",
+    "语义分析与中间代码生成/index.md",
+    "about/index.md",
+    "2018-04-03.md"
+  ]
+}
