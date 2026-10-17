@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1150" font-family="'Consolas', 'Monaco', monospace">
+  <defs>
+    <style>
+      .title { font-family: 'Microsoft YaHei', sans-serif; font-weight: bold; }
+      .layer-title { font-family: 'Microsoft YaHei', sans-serif; font-weight: bold; font-size: 16px; }
+      .struct-name { font-family: 'Consolas', monospace; font-weight: bold; font-size: 13px; fill: white; }
+      .field { font-family: 'Consolas', monospace; font-size: 10px; fill: #1a1a2e; }
+      .field-key { font-family: 'Consolas', monospace; font-size: 10px; fill: #1a1a2e; font-weight: bold; }
+      .comment { font-family: 'Microsoft YaHei', sans-serif; font-size: 9px; fill: #666; font-style: italic; }
+      .arrow-label { font-family: 'Consolas', monospace; font-size: 9px; fill: #444; }
+    </style>
+    <linearGradient id="providerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="consumerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e8449;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9b59b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8e44ad;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="opsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d68910;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2980b9"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#c0392b"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1e8449"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8e44ad"/>
+    </marker>
+  </defs>
+  
+  <!-- White Background -->
+  <rect width="100%" height="100%" fill="white"/>
+  
+  <!-- Title -->
+  <text x="750" y="30" text-anchor="middle" class="title" font-size="22" fill="#2c3e50">Linux Pinctrl 子系统数据结构关系图</text>
+  
+  <!-- ==================== Provider Layer ==================== -->
+  <rect x="20" y="50" width="1460" height="5" fill="#3498db" rx="2"/>
+  <text x="30" y="78" class="layer-title" fill="#2980b9">Provider Layer (Pin Controller Driver) - 驱动提供者层</text>
+  
+  <!-- struct pinctrl_desc -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="95" width="290" height="200" rx="6" fill="white" stroke="#2980b9" stroke-width="2"/>
+    <rect x="30" y="95" width="290" height="28" rx="6" fill="url(#providerGrad)"/>
+    <text x="175" y="115" text-anchor="middle" class="struct-name">struct pinctrl_desc</text>
+    <text x="40" y="143" class="comment">/* Pin Controller 描述符 */</text>
+    <text x="40" y="160" class="field">    const char *name;</text>
+    <text x="250" y="160" class="comment">/* 控制器名称 */</text>
+    <text x="40" y="178" class="field-key" id="desc_pins">    pinctrl_pin_desc *pins;</text>
+    <text x="250" y="178" class="comment">/* 引脚描述数组 */</text>
+    <text x="40" y="196" class="field">    unsigned int npins;</text>
+    <text x="250" y="196" class="comment">/* 引脚数量 */</text>
+    <text x="40" y="214" class="field-key" id="desc_pctlops">    pinctrl_ops *pctlops;</text>
+    <text x="250" y="214" class="comment">/* 引脚组操作 */</text>
+    <text x="40" y="232" class="field-key" id="desc_pmxops">    pinmux_ops *pmxops;</text>
+    <text x="250" y="232" class="comment">/* 引脚复用操作 */</text>
+    <text x="40" y="250" class="field-key" id="desc_confops">    pinconf_ops *confops;</text>
+    <text x="250" y="250" class="comment">/* 引脚配置操作 */</text>
+    <text x="40" y="278" class="comment" fill="#2980b9">驱动注册时提供，描述硬件能力</text>
+  </g>
+  
+  <!-- struct pinctrl_pin_desc -->
+  <g filter="url(#shadow)">
+    <rect x="370" y="95" width="250" height="145" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="370" y="95" width="250" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="495" y="115" text-anchor="middle" class="struct-name">struct pinctrl_pin_desc</text>
+    <text x="380" y="143" class="comment">/* 单个引脚描述 */</text>
+    <text x="380" y="160" class="field-key">    unsigned int number;</text>
+    <text x="550" y="160" class="comment">/* 全局引脚号 */</text>
+    <text x="380" y="178" class="field">    const char *name;</text>
+    <text x="550" y="178" class="comment">/* 引脚名称 */</text>
+    <text x="380" y="196" class="field">    void *drv_data;</text>
+    <text x="550" y="196" class="comment">/* 驱动私有数据 */</text>
+    <text x="380" y="223" class="comment" fill="#8e44ad">描述一个物理引脚/PAD</text>
+  </g>
+  
+  <!-- struct pinctrl_ops -->
+  <g filter="url(#shadow)">
+    <rect x="680" y="95" width="250" height="180" rx="6" fill="white" stroke="#d68910" stroke-width="2"/>
+    <rect x="680" y="95" width="250" height="28" rx="6" fill="url(#opsGrad)"/>
+    <text x="805" y="115" text-anchor="middle" class="struct-name">struct pinctrl_ops</text>
+    <text x="690" y="143" class="comment">/* 引脚控制操作表 */</text>
+    <text x="690" y="160" class="field">    get_groups_count();</text>
+    <text x="840" y="160" class="comment">/* 获取组数 */</text>
+    <text x="690" y="178" class="field">    get_group_name();</text>
+    <text x="840" y="178" class="comment">/* 获取组名 */</text>
+    <text x="690" y="196" class="field">    get_group_pins();</text>
+    <text x="840" y="196" class="comment">/* 获取组内引脚 */</text>
+    <text x="690" y="214" class="field-key">    dt_node_to_map();</text>
+    <text x="840" y="214" class="comment">/* DT转映射表 */</text>
+    <text x="690" y="232" class="field">    dt_free_map();</text>
+    <text x="840" y="232" class="comment">/* 释放映射表 */</text>
+    <text x="690" y="260" class="comment" fill="#d68910">管理引脚组和设备树解析</text>
+  </g>
+  
+  <!-- struct pinmux_ops -->
+  <g filter="url(#shadow)">
+    <rect x="990" y="95" width="230" height="180" rx="6" fill="white" stroke="#d68910" stroke-width="2"/>
+    <rect x="990" y="95" width="230" height="28" rx="6" fill="url(#opsGrad)"/>
+    <text x="1105" y="115" text-anchor="middle" class="struct-name">struct pinmux_ops</text>
+    <text x="1000" y="143" class="comment">/* 引脚复用操作表 */</text>
+    <text x="1000" y="160" class="field">    request();</text>
+    <text x="1120" y="160" class="comment">/* 申请引脚 */</text>
+    <text x="1000" y="178" class="field">    free();</text>
+    <text x="1120" y="178" class="comment">/* 释放引脚 */</text>
+    <text x="1000" y="196" class="field">    get_functions_count();</text>
+    <text x="1000" y="214" class="field">    get_function_name();</text>
+    <text x="1000" y="232" class="field-key">    set_mux();</text>
+    <text x="1120" y="232" class="comment">/* 设置复用 */</text>
+    <text x="1000" y="260" class="comment" fill="#d68910">引脚功能复用切换</text>
+  </g>
+  
+  <!-- struct pinconf_ops -->
+  <g filter="url(#shadow)">
+    <rect x="1280" y="95" width="200" height="155" rx="6" fill="white" stroke="#d68910" stroke-width="2"/>
+    <rect x="1280" y="95" width="200" height="28" rx="6" fill="url(#opsGrad)"/>
+    <text x="1380" y="115" text-anchor="middle" class="struct-name">struct pinconf_ops</text>
+    <text x="1290" y="143" class="comment">/* 引脚配置操作表 */</text>
+    <text x="1290" y="160" class="field">    pin_config_get();</text>
+    <text x="1290" y="178" class="field-key">    pin_config_set();</text>
+    <text x="1290" y="196" class="field">    pin_config_group_set();</text>
+    <text x="1290" y="223" class="comment" fill="#d68910">上下拉/驱动能力等配置</text>
+  </g>
+  
+  <!-- ==================== Core Layer ==================== -->
+  <rect x="20" y="310" width="1460" height="5" fill="#e74c3c" rx="2"/>
+  <text x="30" y="338" class="layer-title" fill="#c0392b">Core Layer (Pinctrl Core) - 核心层</text>
+  
+  <!-- struct pinctrl_dev -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="355" width="320" height="240" rx="6" fill="white" stroke="#c0392b" stroke-width="3"/>
+    <rect x="30" y="355" width="320" height="28" rx="6" fill="url(#coreGrad)"/>
+    <text x="190" y="375" text-anchor="middle" class="struct-name">struct pinctrl_dev</text>
+    <text x="40" y="403" class="comment">/* Pin Controller 设备实例 - 核心结构 */</text>
+    <text x="40" y="420" class="field">    list_head node;</text>
+    <text x="230" y="420" class="comment">/* 全局链表节点 */</text>
+    <text x="40" y="438" class="field-key" id="pctldev_desc">    pinctrl_desc *desc;</text>
+    <text x="230" y="438" class="comment">/* 描述符指针 */</text>
+    <text x="40" y="456" class="field-key" id="pctldev_pindesc">    radix_tree_root pin_desc_tree;</text>
+    <text x="40" y="474" class="comment">    /* 引脚描述基数树 */</text>
+    <text x="40" y="492" class="field" id="pctldev_group">    radix_tree_root pin_group_tree;</text>
+    <text x="40" y="510" class="comment">    /* 引脚组基数树 */</text>
+    <text x="40" y="528" class="field" id="pctldev_func">    radix_tree_root pin_function_tree;</text>
+    <text x="40" y="546" class="comment">    /* 功能基数树 */</text>
+    <text x="40" y="564" class="field" id="pctldev_gpio">    list_head gpio_ranges;</text>
+    <text x="230" y="564" class="comment">/* GPIO范围链表 */</text>
+    <text x="40" y="582" class="field">    mutex mutex;</text>
+    <text x="230" y="582" class="comment">/* 互斥锁 */</text>
+  </g>
+  
+  <!-- struct pin_desc -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="355" width="260" height="220" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="400" y="355" width="260" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="530" y="375" text-anchor="middle" class="struct-name">struct pin_desc</text>
+    <text x="410" y="403" class="comment">/* 运行时引脚描述 */</text>
+    <text x="410" y="420" class="field-key" id="pindesc_pctldev">    pinctrl_dev *pctldev;</text>
+    <text x="580" y="420" class="comment">/* 所属控制器 */</text>
+    <text x="410" y="438" class="field">    const char *name;</text>
+    <text x="580" y="438" class="comment">/* 引脚名称 */</text>
+    <text x="410" y="456" class="field">    void *drv_data;</text>
+    <text x="580" y="456" class="comment">/* 驱动数据 */</text>
+    <text x="410" y="474" class="field">    unsigned int mux_usecount;</text>
+    <text x="580" y="474" class="comment">/* 复用计数 */</text>
+    <text x="410" y="492" class="field">    const char *mux_owner;</text>
+    <text x="580" y="492" class="comment">/* 复用拥有者 */</text>
+    <text x="410" y="510" class="field-key">    mux_setting *mux_setting;</text>
+    <text x="580" y="510" class="comment">/* 当前复用设置 */</text>
+    <text x="410" y="528" class="field">    const char *gpio_owner;</text>
+    <text x="580" y="528" class="comment">/* GPIO拥有者 */</text>
+    <text x="410" y="558" class="comment" fill="#8e44ad">存储引脚运行时状态</text>
+  </g>
+  
+  <!-- struct group_desc -->
+  <g filter="url(#shadow)">
+    <rect x="720" y="355" width="240" height="160" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="720" y="355" width="240" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="840" y="375" text-anchor="middle" class="struct-name">struct group_desc</text>
+    <text x="730" y="403" class="comment">/* 引脚组描述 */</text>
+    <text x="730" y="420" class="field-key">    grp.name;</text>
+    <text x="850" y="420" class="comment">/* 组名称 */</text>
+    <text x="730" y="438" class="field-key">    grp.pins;</text>
+    <text x="850" y="438" class="comment">/* 引脚数组 */</text>
+    <text x="730" y="456" class="field">    grp.npins;</text>
+    <text x="850" y="456" class="comment">/* 引脚数量 */</text>
+    <text x="730" y="474" class="field">    void *data;</text>
+    <text x="850" y="474" class="comment">/* 驱动数据 */</text>
+    <text x="730" y="500" class="comment" fill="#8e44ad">一组相关引脚的集合</text>
+  </g>
+  
+  <!-- struct pinfunction -->
+  <g filter="url(#shadow)">
+    <rect x="1010" y="355" width="230" height="145" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="1010" y="355" width="230" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="1125" y="375" text-anchor="middle" class="struct-name">struct pinfunction</text>
+    <text x="1020" y="403" class="comment">/* 引脚功能描述 */</text>
+    <text x="1020" y="420" class="field-key">    const char *name;</text>
+    <text x="1170" y="420" class="comment">/* 功能名 */</text>
+    <text x="1020" y="438" class="field">    groups[];</text>
+    <text x="1170" y="438" class="comment">/* 支持的组 */</text>
+    <text x="1020" y="456" class="field">    ngroups;</text>
+    <text x="1170" y="456" class="comment">/* 组数量 */</text>
+    <text x="1020" y="483" class="comment" fill="#8e44ad">功能可使用的引脚组</text>
+  </g>
+  
+  <!-- struct pinctrl_gpio_range -->
+  <g filter="url(#shadow)">
+    <rect x="1290" y="355" width="190" height="145" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="1290" y="355" width="190" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="1385" y="375" text-anchor="middle" class="struct-name">pinctrl_gpio_range</text>
+    <text x="1300" y="403" class="comment">/* GPIO范围映射 */</text>
+    <text x="1300" y="420" class="field">    const char *name;</text>
+    <text x="1300" y="438" class="field-key">    unsigned int base;</text>
+    <text x="1300" y="456" class="field-key">    unsigned int npins;</text>
+    <text x="1300" y="483" class="comment" fill="#8e44ad">GPIO与Pin映射</text>
+  </g>
+  
+  <!-- ==================== Consumer Layer ==================== -->
+  <rect x="20" y="630" width="1460" height="5" fill="#27ae60" rx="2"/>
+  <text x="30" y="658" class="layer-title" fill="#1e8449">Consumer Layer (Device Driver) - 消费者层</text>
+  
+  <!-- struct pinctrl -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="675" width="260" height="195" rx="6" fill="white" stroke="#1e8449" stroke-width="2"/>
+    <rect x="30" y="675" width="260" height="28" rx="6" fill="url(#consumerGrad)"/>
+    <text x="160" y="695" text-anchor="middle" class="struct-name">struct pinctrl</text>
+    <text x="40" y="723" class="comment">/* 设备引脚控制句柄 */</text>
+    <text x="40" y="740" class="field">    list_head node;</text>
+    <text x="200" y="740" class="comment">/* 全局链表 */</text>
+    <text x="40" y="758" class="field-key">    device *dev;</text>
+    <text x="200" y="758" class="comment">/* 关联设备 */</text>
+    <text x="40" y="776" class="field-key" id="pinctrl_states">    list_head states;</text>
+    <text x="200" y="776" class="comment">/* 状态链表 */</text>
+    <text x="40" y="794" class="field-key" id="pinctrl_state">    pinctrl_state *state;</text>
+    <text x="200" y="794" class="comment">/* 当前状态 */</text>
+    <text x="40" y="812" class="field">    list_head dt_maps;</text>
+    <text x="200" y="812" class="comment">/* DT映射表 */</text>
+    <text x="40" y="830" class="field">    kref users;</text>
+    <text x="200" y="830" class="comment">/* 引用计数 */</text>
+    <text x="40" y="855" class="comment" fill="#1e8449">每个设备的pinctrl实例</text>
+  </g>
+  
+  <!-- struct pinctrl_state -->
+  <g filter="url(#shadow)">
+    <rect x="340" y="675" width="230" height="160" rx="6" fill="white" stroke="#1e8449" stroke-width="2"/>
+    <rect x="340" y="675" width="230" height="28" rx="6" fill="url(#consumerGrad)"/>
+    <text x="455" y="695" text-anchor="middle" class="struct-name">struct pinctrl_state</text>
+    <text x="350" y="723" class="comment">/* 引脚控制状态 */</text>
+    <text x="350" y="740" class="field">    list_head node;</text>
+    <text x="350" y="758" class="field-key">    const char *name;</text>
+    <text x="500" y="758" class="comment">/* 状态名 */</text>
+    <text x="350" y="776" class="comment">    /* 如"default","sleep" */</text>
+    <text x="350" y="794" class="field-key" id="state_settings">    list_head settings;</text>
+    <text x="500" y="794" class="comment">/* 设置链表 */</text>
+    <text x="350" y="820" class="comment" fill="#1e8449">一个状态包含多个设置</text>
+  </g>
+  
+  <!-- struct pinctrl_setting -->
+  <g filter="url(#shadow)">
+    <rect x="620" y="675" width="260" height="195" rx="6" fill="white" stroke="#1e8449" stroke-width="2"/>
+    <rect x="620" y="675" width="260" height="28" rx="6" fill="url(#consumerGrad)"/>
+    <text x="750" y="695" text-anchor="middle" class="struct-name">struct pinctrl_setting</text>
+    <text x="630" y="723" class="comment">/* 单个引脚设置 */</text>
+    <text x="630" y="740" class="field">    list_head node;</text>
+    <text x="630" y="758" class="field">    enum type;</text>
+    <text x="790" y="758" class="comment">/* 设置类型 */</text>
+    <text x="630" y="776" class="field-key" id="setting_pctldev">    pinctrl_dev *pctldev;</text>
+    <text x="790" y="776" class="comment">/* 目标控制器 */</text>
+    <text x="630" y="794" class="field">    const char *dev_name;</text>
+    <text x="630" y="812" class="field-key">    data.mux.group;</text>
+    <text x="790" y="812" class="comment">/* 复用组 */</text>
+    <text x="630" y="830" class="field-key">    data.mux.func;</text>
+    <text x="790" y="830" class="comment">/* 复用功能 */</text>
+    <text x="630" y="848" class="field">    data.configs;</text>
+    <text x="790" y="848" class="comment">/* 配置参数 */</text>
+    <text x="630" y="855" class="comment" fill="#1e8449">具体的引脚配置项</text>
+  </g>
+  
+  <!-- struct pinctrl_map -->
+  <g filter="url(#shadow)">
+    <rect x="930" y="675" width="250" height="195" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="930" y="675" width="250" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="1055" y="695" text-anchor="middle" class="struct-name">struct pinctrl_map</text>
+    <text x="940" y="723" class="comment">/* 设备树映射表项 */</text>
+    <text x="940" y="740" class="field">    const char *dev_name;</text>
+    <text x="940" y="758" class="field-key">    const char *name;</text>
+    <text x="1110" y="758" class="comment">/* 状态名 */</text>
+    <text x="940" y="776" class="field">    enum type;</text>
+    <text x="1110" y="776" class="comment">/* 映射类型 */</text>
+    <text x="940" y="794" class="field">    const char *ctrl_dev_name;</text>
+    <text x="940" y="812" class="field-key">    data.mux.group;</text>
+    <text x="940" y="830" class="field-key">    data.mux.function;</text>
+    <text x="940" y="855" class="comment" fill="#8e44ad">DT解析结果，转换为setting</text>
+  </g>
+  
+  <!-- struct pinctrl_setting_mux -->
+  <g filter="url(#shadow)">
+    <rect x="1230" y="675" width="220" height="130" rx="6" fill="white" stroke="#8e44ad" stroke-width="2"/>
+    <rect x="1230" y="675" width="220" height="28" rx="6" fill="url(#dataGrad)"/>
+    <text x="1340" y="695" text-anchor="middle" class="struct-name">pinctrl_setting_mux</text>
+    <text x="1240" y="723" class="comment">/* 复用设置数据 */</text>
+    <text x="1240" y="740" class="field-key">    unsigned int group;</text>
+    <text x="1390" y="740" class="comment">/* 组选择器 */</text>
+    <text x="1240" y="758" class="field-key">    unsigned int func;</text>
+    <text x="1390" y="758" class="comment">/* 功能选择器 */</text>
+    <text x="1240" y="785" class="comment" fill="#8e44ad">嵌入在setting.data中</text>
+  </g>
+  
+  <!-- ==================== Arrows (drawn first, behind boxes) ==================== -->
+  
+  <!-- Provider Layer Arrows -->
+  <!-- pinctrl_desc.pins -> pinctrl_pin_desc -->
+  <path d="M 228 178 L 370 178" stroke="#8e44ad" stroke-width="2" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- pinctrl_desc.pctlops -> pinctrl_ops -->
+  <path d="M 228 214 L 228 285 L 650 285 L 650 185 L 680 185" stroke="#d68910" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+  
+  <!-- pinctrl_desc.pmxops -> pinmux_ops -->
+  <path d="M 228 232 L 240 232 L 240 295 L 970 295 L 970 185 L 990 185" stroke="#d68910" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+  
+  <!-- pinctrl_desc.confops -> pinconf_ops -->
+  <path d="M 228 250 L 250 250 L 250 305 L 1270 305 L 1270 172 L 1280 172" stroke="#d68910" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+  
+  <!-- Core Layer Arrows -->
+  <!-- pinctrl_dev.desc -> pinctrl_desc -->
+  <path d="M 190 355 L 190 295" stroke="#c0392b" stroke-width="2" marker-end="url(#arrowRed)" fill="none"/>
+  
+  <!-- pinctrl_dev.pin_desc_tree -> pin_desc -->
+  <path d="M 350 465 L 400 465" stroke="#8e44ad" stroke-width="2" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- pin_desc.pctldev -> pinctrl_dev -->
+  <path d="M 400 430 L 350 430" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- pinctrl_dev.pin_group_tree -> group_desc -->
+  <path d="M 350 502 L 380 502 L 380 530 L 700 530 L 700 450 L 720 450" stroke="#8e44ad" stroke-width="1.5" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- pinctrl_dev.pin_function_tree -> pinfunction -->
+  <path d="M 350 538 L 390 538 L 390 545 L 990 545 L 990 430 L 1010 430" stroke="#8e44ad" stroke-width="1.5" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- pinctrl_dev.gpio_ranges -> pinctrl_gpio_range -->
+  <path d="M 350 574 L 370 574 L 370 600 L 1280 600 L 1280 428 L 1290 428" stroke="#8e44ad" stroke-width="1.5" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- Consumer Layer Arrows -->
+  <!-- pinctrl.states -> pinctrl_state -->
+  <path d="M 290 786 L 340 786" stroke="#1e8449" stroke-width="2" marker-end="url(#arrowGreen)" fill="none"/>
+  
+  <!-- pinctrl_state.settings -> pinctrl_setting -->
+  <path d="M 570 804 L 620 804" stroke="#1e8449" stroke-width="2" marker-end="url(#arrowGreen)" fill="none"/>
+  
+  <!-- pinctrl_setting.pctldev -> pinctrl_dev (绕过其他箭头) -->
+  <path d="M 750 675 L 750 635 L 100 635 L 100 595" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)" fill="none"/>
+  
+  <!-- pinctrl_map -> pinctrl_setting -->
+  <path d="M 930 804 L 880 804" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowPurple)" fill="none"/>
+  
+  <!-- ==================== Legend ==================== -->
+  <g transform="translate(30, 905)">
+    <rect x="0" y="0" width="1440" height="130" rx="5" fill="#fafafa" stroke="#ddd"/>
+    <text x="10" y="22" font-size="13" font-weight="bold" fill="#333">图例说明</text>
+    
+    <rect x="10" y="35" width="18" height="18" fill="url(#providerGrad)" rx="3"/>
+    <text x="35" y="49" font-size="11" fill="#333">Provider Layer - 驱动提供者层：Pin Controller 驱动实现并注册的结构</text>
+    
+    <rect x="10" y="60" width="18" height="18" fill="url(#coreGrad)" rx="3"/>
+    <text x="35" y="74" font-size="11" fill="#333">Core Layer - 核心层：pinctrl 子系统内部管理结构</text>
+    
+    <rect x="10" y="85" width="18" height="18" fill="url(#consumerGrad)" rx="3"/>
+    <text x="35" y="99" font-size="11" fill="#333">Consumer Layer - 消费者层：设备驱动使用的状态管理结构</text>
+    
+    <rect x="550" y="35" width="18" height="18" fill="url(#dataGrad)" rx="3"/>
+    <text x="575" y="49" font-size="11" fill="#333">Data Structure - 数据结构：存储映射关系和配置信息</text>
+    
+    <rect x="550" y="60" width="18" height="18" fill="url(#opsGrad)" rx="3"/>
+    <text x="575" y="74" font-size="11" fill="#333">Operations - 操作函数表：驱动实现的回调函数</text>
+    
+    <line x1="550" y1="97" x2="590" y2="97" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="600" y="101" font-size="11" fill="#333">指针引用关系</text>
+    
+    <line x1="750" y1="97" x2="790" y2="97" stroke="#555" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+    <text x="800" y="101" font-size="11" fill="#333">反向/间接引用</text>
+    
+    <text x="1000" y="49" font-size="11" fill="#333" font-weight="bold">关键字段:</text>
+    <text x="1000" y="70" font-size="10" fill="#666">加粗显示，表示核心关联字段</text>
+    <text x="1000" y="95" font-size="10" fill="#666">斜体注释说明字段用途</text>
+    <text x="1000" y="115" font-size="10" fill="#666">箭头从字段直接指向目标类型</text>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+# Hugo 构建产物
+/public/
+/resources/_gen/
+.hugo_build.lock
+hugo_stats.json
+assets/jsconfig.json
+
+# 日志
+*.log
+
+# 操作系统
+.DS_Store
+Thumbs.db
+

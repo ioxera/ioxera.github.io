@@ -1,0 +1,19 @@
+baseURL = 'https://ioxera.github.io/'
+locale = 'zh-cn'
+title = "ioxera's blog"
+theme = 'hugo-book'
+
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.renderHooks]
+      [markup.goldmark.renderHooks.image]
+        useEmbedded = 'fallback'
+      [markup.goldmark.renderHooks.link]
+        useEmbedded = 'fallback'
+[markup.tableOfContents]
+  startLevel = 1
+  endLevel = 6
+

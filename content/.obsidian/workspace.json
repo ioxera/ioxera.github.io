@@ -1,0 +1,216 @@
+{
+  "main": {
+    "id": "2fe4ef7c9f9b1e17",
+    "type": "split",
+    "children": [
+      {
+        "id": "4826f3ed85144b92",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6b34b0fe7e2d116",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新标签页"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f28fce272130c263",
+    "type": "split",
+    "children": [
+      {
+        "id": "eded9359e9793dd5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3c1aef7d126880be",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "10d6d071dad669b3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "2f67995ac69b2723",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 368.5
+  },
+  "right": {
+    "id": "a1799a8160885e20",
+    "type": "split",
+    "children": [
+      {
+        "id": "271c5e1d9a5ccc2a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2f66ab0d0725554c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "103f1c6c97ec0d1e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "becb39419de5a431",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "e23f9a9a0574e1da",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:新建数据库": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "c6b34b0fe7e2d116",
+  "lastOpenFiles": [
+    "docs/独立的debuginfo文件.md",
+    "docs/使用busybox构建最小rootfs.md",
+    "docs/使用Codeql进行污点跟踪.md",
+    "docs/linux_QA/_index.md",
+    "docs/宋宝华驱动开发读书笔记/_index.md",
+    "docs/linux_QA/linux中的硬编码全局变量段/index.md",
+    "docs/linux_QA/linux中的硬编码全局变量段",
+    "docs/linux_QA/arm架构下的异常向量表/index.md",
+    "docs/linux_QA/arm架构下的异常向量表",
+    "docs/linux_QA/CPU性能瓶颈分析/index.md",
+    "docs/linux_QA/CPU性能瓶颈分析",
+    "docs/宋宝华驱动开发读书笔记/设备树/index.md",
+    "docs/宋宝华驱动开发读书笔记/05. linux文件系统与设备模型/index.md",
+    "docs/韦东山内核驱动笔记/内核命令接口-ioctl介绍/index.md",
+    "docs/宋宝华驱动开发读书笔记/07. linux内核中的并发控制/index.md",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/f420695866c5d335af64a16eea56a468_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/981794a31a98aea60c35adcc7d594223_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/c7ff2d27536fc2ffddc5954751cf40a7_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/70e0f95a4791a4e51c7ed9796f5a0980_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/830cf01a5325b7ba17e26f65f44ec81d_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/6cf29da5c0824ef78f3cb60ef23ed359_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/5647f2d158cd665db074dc250257f205_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/479f3439eeab8a82b19092007f50c777_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/3ae90b3485d4f0c8b0bfb60577bd55a8_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets/33785f0917cd68458792ae12f40eb3ab_MD5.png",
+    "docs/韦东山内核驱动笔记/设备树解析函数/index.md",
+    "docs/韦东山内核驱动笔记/设备树解析函数/assets",
+    "docs/韦东山内核驱动笔记/设备树解析函数",
+    "docs/韦东山内核驱动笔记/设备树/index.md",
+    "docs/韦东山内核驱动笔记/设备树/assets",
+    "docs/韦东山内核驱动笔记/设备树",
+    "docs/韦东山内核驱动笔记/字符设备驱动-2-GPIO驱动KEY示例/index.md",
+    "docs/韦东山内核驱动笔记/字符设备驱动-2-GPIO驱动KEY示例/assets",
+    "docs/韦东山内核驱动笔记/字符设备驱动-2-GPIO驱动KEY示例",
+    "docs/韦东山内核驱动笔记/字符设备驱动-1-字符设备驱动框架/index.md",
+    "docs/韦东山内核驱动笔记/字符设备驱动-1-字符设备驱动框架/assets",
+    "docs/韦东山内核驱动笔记/中断子系统-7-中断处理-threaded_irq/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-6-中断处理-workqueue/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-5-中断处理-tasklet/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-4-设备树中的中断描述与解析/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-3-中断结构体/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-2-ARM架构GIC介绍/index.md",
+    "docs/韦东山内核驱动笔记/中断子系统-1-linux中断介绍/index.md",
+    "docs/韦东山内核驱动笔记/rootfs构建/index.md",
+    "docs/韦东山内核驱动笔记/regmap子系统/index.md",
+    "docs/韦东山内核驱动笔记/platform驱动模型/index.md"
+  ]
+}
