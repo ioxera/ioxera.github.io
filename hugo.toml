@@ -13,7 +13,10 @@ theme = 'hugo-book'
         useEmbedded = 'fallback'
       [markup.goldmark.renderHooks.link]
         useEmbedded = 'fallback'
-[markup.tableOfContents]
-  startLevel = 1
-  endLevel = 6
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 6
 
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'

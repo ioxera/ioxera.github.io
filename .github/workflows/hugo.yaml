@@ -1,78 +1,144 @@
-# 用于构建和部署Hugo网站到GitHub Pages的示例工作流程
-name: 发布Hugo网站到Pages
+name: Build and deploy
+env:
+  # Define tool versions
+  DART_SASS_VERSION: 1.105.1
+  GO_VERSION: 1.27.2
+  HUGO_VERSION: 0.168.0
+  NODE_VERSION: 24.21.0
 
+  # Set the build time zone
+  TZ: Asia/Shanghai
 on:
-  # 在目标为默认分支的推送上运行
   push:
     branches:
       - main
-
-  # 允许您手动从“Actions”标签运行此工作流程
   workflow_dispatch:
-
-# 设置GITHUB_TOKEN的权限，以允许部署到GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
-
-# 仅允许一个并发部署，跳过在进行中的运行与最新排队的运行之间排队的运行。
-# 但是，请不要取消进行中的运行，因为我们希望这些生产部署能够完成。
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
-
-# 默认使用bash
 defaults:
   run:
     shell: bash
-
 jobs:
-  # 构建作业
   build:
     runs-on: ubuntu-latest
-    env:
-      HUGO_VERSION: 0.165.0
     steps:
-      - name: 安装Hugo CLI
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb          
-      - name: 安装Dart Sass
-        run: sudo snap install dart-sass
-      - name: 检出
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: 设置Pages
+          lfs: false
+
+      - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
-      - name: 安装Node.js依赖
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: 使用Hugo构建
-        env:
-          # 为了与Hugo模块的最大向后兼容性
-          HUGO_ENVIRONMENT: production
-          HUGO_ENV: production
+        uses: actions/configure-pages@v6
+
+      - name: Create a local tools directory
         run: |
-          hugo \
+          mkdir -p "${HOME}/.local"
+
+      - name: Install Go
+        if: hashFiles('go.mod') != ''
+        uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: false
+
+      - name: Install Node.js
+        if: hashFiles('package-lock.json') != ''
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dart Sass
+        run: |
+          echo "Installing Dart Sass ${DART_SASS_VERSION}..."
+          curl -sfL --output-dir "${{ runner.temp }}" -O "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
+          tar -C "${HOME}/.local" -xf "${{ runner.temp }}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
+          echo "${HOME}/.local/dart-sass" >> "${GITHUB_PATH}"
+
+      - name: Install Hugo
+        run: |
+          echo "Installing Hugo ${HUGO_VERSION}..."
+          curl -sfL --output-dir "${{ runner.temp }}" -O "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          mkdir "${HOME}/.local/hugo"
+          tar -C "${HOME}/.local/hugo" -xf "${{ runner.temp }}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
+
+      - name: Log tool versions
+        run: |
+          echo "Logging tool versions..."
+          command -v sass &> /dev/null && echo "Dart Sass: $(sass --version)" || echo "Dart Sass: not installed"
+          command -v go &> /dev/null && echo "Go: $(go version)" || echo "Go: not installed"
+          command -v hugo &> /dev/null && echo "Hugo: $(hugo version)" || echo "Hugo: not installed"
+          command -v node &> /dev/null && echo "Node.js: $(node --version)" || echo "Node.js: not installed"
+
+      - name: Configure Git
+        run: |
+          echo "Configuring Git..."
+          git config --global core.quotepath false
+
+      - name: Fetch full Git history
+        run: |
+          if [[ $(git rev-parse --is-shallow-repository) == true ]]; then
+            echo "Fetching full Git history..."
+            git fetch --unshallow
+          fi
+
+      - name: Initialize Git submodules
+        run: |
+          if [[ -f .gitmodules ]]; then
+            echo "Initializing Git submodules..."
+            git submodule update --init --recursive
+          fi
+
+      - name: Install Node.js dependencies
+        run: |
+          if [[ -f package-lock.json ]]; then
+            echo "Installing Node.js dependencies..."
+            npm ci
+          fi
+
+      - name: Cache restore
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/.cache/hugo
+          key: hugo-${{ github.run_id }}
+          restore-keys: hugo-
+
+      - name: Build
+        run: |
+          echo "Building the project..."
+          hugo build \
             --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"          
-      - name: 上传构建产物
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: ./public
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --cacheDir "${{ runner.temp }}/.cache/hugo"
 
-  # 部署作业
+      - name: Cache save
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}/.cache/hugo
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          include-hidden-files: false
+          path: ./public
   deploy:
+    runs-on: ubuntu-latest
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: 部署到GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v5
