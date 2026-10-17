@@ -7,5 +7,6 @@
   "attachmentFolderPath": "./assets",
   "newLinkFormat": "relative",
   "alwaysUpdateLinks": true,
-  "showUnsupportedFiles": true
+  "showUnsupportedFiles": true,
+  "settingsPopoutWindow": false
 }

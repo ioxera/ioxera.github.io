@@ -1,0 +1,13 @@
+{{ if eq .Type "block" }}
+  {{ $opts := dict "displayMode" true "output" "htmlAndMathml" }}
+  {{ with transform.ToMath .Inner $opts }}
+    {{ with .Err }}
+      {{ errorf "KaTeX 渲染失败: %q (%s)" . $.Position }}
+    {{ else }}
+      {{ . }}
+    {{ end }}
+  {{ end }}
+{{ else }}
+  {{ transform.ToMath .Inner }}
+{{ end }}
+

@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "4826f3ed85144b92",
+        "id": "172bfeefd4575091",
         "type": "tabs",
         "children": [
           {
-            "id": "c6b34b0fe7e2d116",
+            "id": "cc14feee2132293b",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -110,6 +110,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "docs/使用Codeql进行污点跟踪.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -138,6 +139,7 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "docs/使用Codeql进行污点跟踪.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -147,7 +149,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -164,7 +166,7 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "c6b34b0fe7e2d116",
+  "active": "e23f9a9a0574e1da",
   "lastOpenFiles": [
     "docs/独立的debuginfo文件.md",
     "docs/使用busybox构建最小rootfs.md",
